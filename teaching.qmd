@@ -1,0 +1,78 @@
+---
+title: "Teaching"
+format:
+  html:
+    css: styles.css
+---
+
+## Resources
+You are welcome to use these for educational or personal purposes. I would greatly appreciate if you contat me and let me know how/when you've used them. 
+
+[Introduction to R](https://rgpark.quarto.pub/introduction-to-r/)
+
+[Green Growth Simulation](PECC_development_simulation.html)
+
+[Climate Migration Simulation](PECC_migration_simulation.html)
+
+[Policy Evaluation](ENSP_evaluation.html)
+
+[Green Industrial Policy Simulation](PECC_GIP_sumulation.html)
+
+------------------------------------------------------------------------
+
+## Research Lab
+
+**Political Economy of Environment (PEN) Lab** at William & Mary, Spring 2026
+
+------------------------------------------------------------------------
+
+## Teaching Experiences
+
+### 🌱 Environmental Politics
+
+[\*Syllabus available upon request]{style="font-size: 0.8em; color: grey;"}
+
+**Political Economy of Extreme Weather** at William & Mary, Fall 2025, Spring 2026
+
+**Introduction to Environmental Policy Making** at William & Mary, Fall 2025, Spring 2026
+
+**Environmental Politics & Administration** at University of California, Davis, Spring 2024 (as associate instructor)
+
+------------------------------------------------------------------------
+
+### 📊 Methods
+
+**Graduate-level methods sequence** at University of California, Davis
+
+-   Fall 2024 (as lead TA) with Professor Hanno Hilbig
+-   Winter 2025 (as lead TA) with Professor Lauren Young
+-   Spring 2025 (as lead TA) with Professor Lauren Peritz
+
+**The Scientific Study of Politics** at University of California, Davis \
+(as lead TA in charge of 50 minute discussion sections once a week)
+
+-   Winter 2024, Spring 2023 with Professor Christopher Hare
+-   Winter 2023 with Professor McCage Griffith
+-   Winter 2022 with Professor Rachel Bernhard
+-   Fall 2023, Fall 2022, Fall 2021 with Professor Juan Tellez
+
+------------------------------------------------------------------------
+
+### 🌏 International Relations
+
+**Politics of Interdependence** at University of California, Davis
+
+-   Fall 2020 (as TA) with Professor Daniel Y. Kono
+-   Winter 2019 (as TA) with Professor Heather McKibben
+
+**Politics of Inequality** at University of California, Davis
+
+-   Spring 2022 (as TA) with Professor Sarah Prince
+
+**The Arab-Israeli Conflict** at University of California, Davis
+
+-   Spring 2020 (as TA) with Professor Zeev Maoz
+
+**Global citizens, Patriotism and Nationalism** at College of Liberal Studies, Seoul National University
+
+-   Spring 2018 (as TA) with Professor Kyung-Koo Han

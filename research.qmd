@@ -1,0 +1,56 @@
+---
+title: "Research"
+format:
+  html:
+    css: styles.css
+---
+
+## Peer Reviewed Journal Articles
+
+-   ["When Is International Trade a Security Threat?,"](https://doi.org/10.1177/07388942261416263) *Conflict Management and Peace Science,* (forthcoming) (with Brandon Kinne) [\*Earlier title was "Trading with China, Is It Really a Security Issue?, Causes of Securitization of Trade Among American Public'']{style="font-size: 0.8em; color: grey;"}
+
+-   ["Is Trade the Enemy of Environment? - Congressional Voting on Environmental Policies after the China Shock,"](https://www.tandfonline.com/doi/abs/10.1080/03050629.2025.2502363) *International Interactions,* Vol. 51, No. 4 (2025) [\*Earlier title was "Do Trade Shocks Mean Fewer Green Bills? US Congressional Voting on Environmental Policy after China Shock"]{style="font-size: 0.8em; color: grey;"}
+
+-   ["Looking Outside or Inside?: The Effects of Trade Bureaucracy on Trade Dispute Behavior,"](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4982301) *Asian Journal of WTO & International Health Law and Policy*, Vol. 20, No.1 (2025 March) (with JungHyun Han)
+
+-   ["South Korea's Renewable Energy Policy: Coming Together or Drifting Apart?,"](https://s-space.snu.ac.kr/handle/10371/145227) *Journal of International and Area Studies*, Vol. 25 No. 2 (2018 Dec) (with MinGyo Koo)
+
+## Other Published Works
+
+-   ["Greening the WTO: A Lost Cause or Potential Solution?,"](https://kluwerlawonline.com/JournalArticle/Journal+of+World+Trade/59.4/TRAD2025036) *Journal of World Trade*, Vol. 49 No.4 (2025 August) with Jaemin Lee
+
+-   ["A comment on Herzog, Baron, and Gibbons (2022),"](https://www.econstor.eu/bitstream/10419/280748/1/I4R-DP097.pdf) *I4R Discussion Paper Series*, No. 97, Institute for Replication (I4R) with Haley Daarstad and [Timea Balogh](https://timea-balogh.com/)
+
+## Working Papers
+
+\*Working papers available upon request
+
+-   Green Industrial Policies in the Eyes of the Beholder [\*Funded by 2023 APSA Doctoral Dissertation Research Improvement Grant]{style="font-size: 0.8em; color: grey;"} (under review)
+
+-   Industry Demand for Environmental Deregulation (co-authoring with Lauren Peritz)
+
+-   Green Spending in Times of Economic Hardship (co-authoring with J. Hovi, N. Kupzok, V. Tørstad, J.M. Valenzuela; under review) [\*Funded by Climate Politics During Recessions: Examining Drivers of a Green Economic Recovery (CLIMREC)]{style="font-size: 0.8em; color: grey;"}
+
+-   US Trade Investigation and Geopolitics (co-authoring with Jiani Lu; under review)
+
+-   Green's Disadvantage? (co-authoring with [Timea Balogh](https://timea-balogh.com/); under review)
+
+## Works in Progress
+
+-   Securitization of Climate Change at United Nations (co-authoring with [Alec Hahus](https://alechahus.wordpress.com/))
+
+    -   Climate change poses substantial national security risks to countries worldwide, both through direct impacts such as extreme weather events and indirect socio-economic consequences. To better understand the extent and cause of securitization regarding climate change, we analyze speeches at the United Nations General Assembly between 1990 and 2024. Our analysis shows a growing tendency to securitize climate change.
+
+    -   **Keywords:** text analysis, climate change politics, united nations, securitization
+
+-   Effects of Hosting a Conference of Parties (co-authoring with Forrest Owens)
+
+    -   Hosting an international event can serve as a catalyst for domestic policy change through a spotlight effect. Can hosting the Conference of Parties (COP), the main decision-making body of the United Nations Framework Convention on Climate Change increase public support for climate action?
+
+    -   **Keywords:** international organization, climate change politics, intersection between international and domestic politics
+    
+-   Multinational Companies' Climate Action  (co-authoring with Hannah Gabriel)
+
+    -   Why do some firms take on costlier actions for climate change mitigation efforts than others? We test whether firms highly integrated in the global market are more willing to take on costlier actions to mitigate climate change. 
+
+    -   **Keywords:** international economic competition, multinational companies, firm-level, climate change politics, internatinonal political economy

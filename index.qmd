@@ -1,0 +1,45 @@
+---
+title: "RyuGyung (Rio) Park"
+subtitle: "Assistant Professor <br> Department of Government & ENSP <br> William & Mary <br> ✉️ [rgpark@wm.edu](mailto:rgpark@wm.edu)"
+image: https://www.dropbox.com/scl/fi/ebtoczlsrkhfyrpgbnmmd/profile.JPG?rlkey=duetnge7lu71bhanfbmp374kc&st=r1uapqp4&raw=1
+toc: false
+about: 
+  id: heading
+  template: trestles
+  image-shape: rounded
+  image-width: 16em
+  links:
+    - icon: CV
+      text: CV
+      href: https://www.dropbox.com/scl/fi/ld1ekzh1lj03b985yo2yx/CV_Park_2025.pdf?rlkey=2vnks3bgo2ftpqx10nbdui1m8&st=a95xet9k&dl=0
+format:
+  html:
+    css: styles.css
+---
+
+::: {#heading}
+### About Me
+
+I am an assistant professor at the College of William & Mary, jointly appointed in the Department of [Government](https://www.wm.edu/as/government/) and the [Environment & Sustainability Program](https://www.wm.edu/as/environment/). I am interested in how economic and security concerns affect support for environmental protection. In my dissertation, I examine how international economic competition affects environmental support in the U.S. Congress and among the American public. I strive to pursue a variety of research methods, including observational studies, text analysis, and survey experiments.
+
+Before coming to the academia, I interned at the headquarter of the U.N.E.S.C.O and KOICA as an undergraduate, and worked in the non-profit sector in South Korea for about a year after graduating college.
+
+In my free time, I like watching movies (all genres except for horror), collecting books (maybe more so than reading them), and travelling (to explore cafés and bakeries).
+
+### Education
+
+**PhD in Political Science, 2025**\
+University of California, Davis, USA
+
+**MA in Public Policy, 2019**\
+Graduate School of Public Administration, Seoul National University, South Korea
+
+**BA in International Relations & Communications, 2015**\
+College of Liberal Studies, Seoul National University, South Korea
+
+### Research interests
+
+International Political Economy \| Environmental Politics \| International Trade \| Issue Linkage \| Economy and Security
+:::
+
+<center>[Last updated: January 6, 2026 <br> © 2026 RyuGyung (Rio) Park. Made with [Quarto](https://quarto.org)]{style="font-size: 0.8em; color: grey;"}</center>

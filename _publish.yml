@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: a93a98e1-8a6a-4da5-b75c-3fc01dd145bc
+      url: 'https://rgpark.quarto.pub/aboutme'

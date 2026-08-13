@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# R / RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Quarto
+/.quarto/
+
+# Old Quarto Pub output folder (no longer used; docs/ is published instead)
+_site/
+
+# Personal notes, not part of the website
+_notes/
+
+**/*.quarto_ipynb

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Climate Migration Choice Game</title>
+  <style>
+    :root{
+      --bg:#0b1324; --panel:#121a31; --muted:#9aa4b2; --text:#e6ebf2; --accent:#6ee7b7; --accent2:#93c5fd; --warn:#fbbf24; --danger:#f87171;
+    }
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(180deg,#0b1324 0%,#0f1a33 100%);color:var(--text)}
+    .container{max-width:900px;margin:0 auto;padding:24px}
+    .grid{display:grid;gap:16px}
+    .cols{grid-template-columns:1fr} /* always one column */
+    .card{background:rgba(18,26,49,.8);border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 25px rgba(0,0,0,.35);backdrop-filter: blur(6px);border-radius:16px}
+    .card h2{margin:0 0 8px 0;font-size:1.25rem}
+    .card .content{padding:18px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:.85rem;color:var(--muted)}
+    .row{display:flex;flex-wrap:wrap;gap:10px}
+    button{appearance:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--text);padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:transform .05s ease,background .2s ease,border-color .2s ease}
+    button:hover{background:rgba(255,255,255,.08)}
+    button:active{transform:translateY(1px)}
+    .primary{background:linear-gradient(180deg, rgba(147,197,253,.3), rgba(110,231,183,.3));border-color:rgba(255,255,255,.35)}
+    .choice{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px dashed rgba(255,255,255,.18);border-radius:12px}
+    .choice .meta{color:var(--muted);font-size:.9rem}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .kpi .box{background:rgba(255,255,255,.04);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+    .kpi .label{color:var(--muted);font-size:.8rem}
+    .kpi .val{font-weight:800;font-size:1.2rem}
+    .badge{font-size:.8rem;padding:.15rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+    .good{color:#052e1f;background:#6ee7b733;border-color:#6ee7b7}
+    .warn{color:#2c1a05;background:#fbbf2430;border-color:#fbbf24}
+    .bad{color:#3a0a0a;background:#f8717130;border-color:#f87171}
+    .muted{color:var(--muted)}
+    .small{font-size:.9rem}
+    .hidden{display:none}
+    .footer{margin-top:20px;color:var(--muted);font-size:.85rem}
+    .log{width:100%;height:160px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:var(--muted);border-radius:12px;padding:10px}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);margin:14px 0}
+    a{color:var(--accent2)}
+  </style>
+</head>
+<body>
+  <div class="container grid cols">
+    <!-- INSTRUCTIONS (first) -->
+    <header class="card">
+      <div class="content">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <h1 style="margin:.2rem 0 0;font-size:1.6rem">Climate Migration Choice Game</h1>
+            <div class="muted small">You are randomly assigned a scenario showing the climate risk, your household income, and skills level. You will make a choice whether you want to stay and adapt or migrate to another region or to another country.</div>
+          </div>
+          <div class="row">
+            <button id="newScenarioBtn" class="primary">🎲 New Scenario</button>
+            <button id="downloadBtn">⬇️ Download CSV</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SCENARIO (second) -->
+    <section class="card">
+      <div class="content">
+        <h2>🎯 Your Scenario</h2>
+        <div id="scenarioPills" class="row" style="margin:6px 0 12px"></div>
+        <div id="scenarioText" class="small muted">Click “New Scenario” to begin.</div>
+        <div class="divider"></div>
+        <div class="row">
+          <div class="pill">Seed: <span id="seedPill">—</span></div>
+          <div class="pill">Scenario ID: <span id="scenarioIdPill">—</span></div>
+          <div class="pill">Session: <span id="sessionPill">—</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHOICES (third) -->
+    <section class="card">
+      <div class="content">
+        <h2>🧭 Choices</h2>
+        <div class="small muted">You will work left to right. Each choice changes outcome probabilities, costs, and feasibility.</div>
+        <div class="divider"></div>
+
+        <div class="grid" style="grid-template-columns:1fr;gap:12px">
+          <!-- Choice A: Destination -->
+          <div class="choice">
+            <div>
+              <div><strong>A. Destination</strong></div>
+              <div class="meta">Stay & adapt · Internal migration · International migration</div>
+            </div>
+            <div class="row">
+              <button class="choiceBtn" data-group="destination" data-value="stay">Stay & Adapt</button>
+              <button class="choiceBtn" data-group="destination" data-value="internal">Internal Migration</button>
+              <button class="choiceBtn" data-group="destination" data-value="international">International Migration</button>
+            </div>
+          </div>
+
+          <!-- Choice B: Timing -->
+          <div class="choice">
+            <div>
+              <div><strong>B. Timing</strong></div>
+              <div class="meta">Now · In 1–3 years · 5+ years</div>
+            </div>
+            <div class="row">
+              <button class="choiceBtn" data-group="timing" data-value="now">Now</button>
+              <button class="choiceBtn" data-group="timing" data-value="soon">In 1–3 years</button>
+              <button class="choiceBtn" data-group="timing" data-value="later">5+ years</button>
+            </div>
+          </div>
+
+          <!-- Choice C: Financing -->
+          <div class="choice">
+            <div>
+              <div><strong>C. Financing</strong></div>
+              <div class="meta">Savings · Family/Network support · Loan/Microfinance</div>
+            </div>
+            <div class="row">
+              <button class="choiceBtn" data-group="finance" data-value="savings">Savings</button>
+              <button class="choiceBtn" data-group="finance" data-value="network">Family/Network</button>
+              <button class="choiceBtn" data-group="finance" data-value="loan">Loan/Microfinance</button>
+            </div>
+          </div>
+
+          <!-- Choice D: Legal Pathway (only if international) -->
+          <div class="choice" id="legalChoice" style="display:none">
+            <div>
+              <div><strong>D. Legal Pathway</strong> <span class="badge warn">required for international</span></div>
+              <div class="meta">Work/Skill visa · Family reunification · Humanitarian (refugee/asylum) where eligible</div>
+            </div>
+            <div class="row">
+              <button class="choiceBtn" data-group="legal" data-value="work">Work/Skill Visa</button>
+              <button class="choiceBtn" data-group="legal" data-value="family">Family Reunification</button>
+              <button class="choiceBtn" data-group="legal" data-value="humanitarian">Humanitarian</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="row">
+          <button id="outcomeBtn" class="primary">📊 See Outcome</button>
+          <button id="resetBtn">Reset Choices</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS (fourth) -->
+    <section class="card">
+      <div class="content">
+        <h2>📈 Results</h2>
+        <div class="kpi">
+          <div class="box"><div class="label">Safety Gain</div><div id="kpiSafety" class="val">—</div></div>
+          <div class="box"><div class="label">Economic Outlook</div><div id="kpiEcon" class="val">—</div></div>
+          <div class="box"><div class="label">Feasibility</div><div id="kpiLegal" class="val">—</div></div>
+          <div class="box"><div class="label">Overall Score</div><div id="kpiOverall" class="val">—</div></div>
+        </div>
+        <div id="outcomeBadges" class="row" style="margin-top:10px"></div>
+        <div class="divider"></div>
+        <div id="outcomeText" class="small muted">Your narrative outcome will appear here once you click “See Outcome”.</div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div>Data stays in your browser. You can set a fixed random seed using <code>?seed=123</code> in the URL; add <code>&session=SectionA</code> to tag a group.</div>
+      <div> © 2025 RP. This simulation was developed by Rio Park with assistance from ChatGPT (OpenAI) for educational use. You are welcome to use, adapt, and share this material for non-commercial educational or personal purposes. Please credit the author and contact me if you plan to modify or redistribute it publicly.  
+</div>
+
+    </section>
+
+    <textarea id="debugLog" class="log hidden" readonly></textarea>
+  </div>
+
+  <script>
+    // ===== Utilities: seeded RNG, helpers =====
+    function xmur3(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return (h^h>>>16)>>>0}}
+    function sfc32(a,b,c,d){return function(){a|=0;b|=0;c|=0;d|=0;let t=(a+b|0)+d|0;d=d+1|0;a=b^b>>>9;b=c+(c<<3)|0;c=(c<<21|c>>>11);c=c+t|0;return (t>>>0)/4294967296}}
+    function seededRng(seedStr){const seed=xmur3(seedStr);return sfc32(seed(),seed(),seed(),seed())}
+    function pick(rng, arr){return arr[Math.floor(rng()*arr.length)]}
+    function pickWeighted(rng, items){ // items: [{item, w}]
+      const sum=items.reduce((a,b)=>a+b.w,0); let r=rng()*sum; for(const it of items){if((r-=it.w)<=0) return it.item} return items[items.length-1].item;
+    }
+
+    // ===== Parameters =====
+    const CLIMATE_RISKS=[
+      {level:"Moderate", hazard:"recurrent drought & heat stress", riskScore:30, text:"Impacts rising; adaptation possible but costly."},
+      {level:"Severe", hazard:"flooding & cyclones", riskScore:60, text:"Major events every few years; damages livelihoods."},
+      {level:"Extreme", hazard:"chronic sea‑level rise & extreme heat", riskScore:85, text:"Frequent shocks + long‑term habitability concerns."}
+    ];
+
+    const SKILLS=[
+      {level:"Low", workBoost:0.6, econBoost:-0.05, text:"Limited formal skills; lower eligibility for skilled visas."},
+      {level:"Middle", workBoost:1.0, econBoost:0.0, text:"Some vocational/tertiary skills."},
+      {level:"High", workBoost:1.4, econBoost:0.06, text:"High‑demand/tertiary skills; better job prospects abroad."}
+    ];
+
+    const INCOMES=[
+      {level:"Low", savings:0.2, credit:0.2, network:0.4, text:"Limited savings; relies on networks; credit expensive."},
+      {level:"Middle", savings:0.5, credit:0.5, network:0.5, text:"Some savings; moderate access to credit."},
+      {level:"High", savings:0.8, credit:0.8, network:0.6, text:"Good savings/credit; diversified income."}
+    ];
+
+    const SOCIAL=[
+      {level:"None", int:false, dom:false, text:"No close family/friends in other regions or countries."},
+      {level:"Other region", int:false, dom:true, text:"Family/friends in another region within your country."},
+      {level:"Other country", int:true, dom:false, text:"Family/friends in another country."}
+    ];
+
+    const DESTINATION={
+      stay:{baseSafetyGain: (risk)=> Math.max(10, 100-risk*0.6), cost: 0.2, legal:1.0, note:"Invest in local adaptation (e.g., elevating home, irrigation)."},
+      internal:{baseSafetyGain:(risk)=> Math.max(25, 110-risk*0.9), cost:0.45, legal:0.95, note:"Move to safer region within country; relocation support may exist."},
+      international:{baseSafetyGain:(risk)=> Math.max(40, 130-risk*1.0), cost:0.9, legal:0.6, note:"Cross‑border move; requires a legal pathway and higher upfront costs."}
+    };
+
+    const LEGAL_PATHS={
+      work:{name:"Work/Skill Visa", feas:(inc,skill)=> (0.35 + 0.5*inc) * (0.7 + 0.3*skill), cost:0.2, note:"Eligibility ↑ with skills, job offer, language."},
+      family:{name:"Family Reunification", feas:(inc,skill)=> 0.55, cost:0.15, note:"Depends on having an eligible sponsor."},
+      humanitarian:{name:"Humanitarian (asylum/refugee)", feas:(inc,skill)=> 0.25, cost:0.1, note:"Requires protection grounds; processes uncertain."}
+    };
+
+    const TIMING={
+      now:{name:"Now", riskMult:1.0, costMult:1.0, econShock: -0.05},
+      soon:{name:"1–3 years", riskMult:1.15, costMult:0.9, econShock: 0.02},
+      later:{name:"5+ years", riskMult:1.35, costMult:0.8, econShock: 0.06}
+    };
+
+    // ===== State =====
+    const urlParams=new URLSearchParams(location.search);
+    const seedStr=urlParams.get('seed') || String(Date.now());
+    const sessionTag=urlParams.get('session') || 'Default';
+    const rng=seededRng(seedStr);
+
+    let scenario=null;
+    const choices={destination:null,timing:null,finance:null,legal:null};
+
+    const el={
+      seedPill:document.getElementById('seedPill'),
+      scenarioIdPill:document.getElementById('scenarioIdPill'),
+      sessionPill:document.getElementById('sessionPill'),
+      scenarioPills:document.getElementById('scenarioPills'),
+      scenarioText:document.getElementById('scenarioText'),
+      legalChoice:document.getElementById('legalChoice'),
+      outcomeText:document.getElementById('outcomeText'),
+      outcomeBadges:document.getElementById('outcomeBadges'),
+      kpiSafety:document.getElementById('kpiSafety'),
+      kpiEcon:document.getElementById('kpiEcon'),
+      kpiLegal:document.getElementById('kpiLegal'),
+      kpiOverall:document.getElementById('kpiOverall'),
+      debugLog:document.getElementById('debugLog')
+    };
+
+    el.seedPill.textContent=seedStr;
+    el.sessionPill.textContent=sessionTag;
+
+    // ===== Scenario generation =====
+    function newScenario(){
+      const risk=pick(rng, CLIMATE_RISKS);
+      const skill=pick(rng, SKILLS);
+      // Income depends on skills: Low skill -> Low income; Middle skill -> any; High skill -> Middle or High
+      let inc;
+      if(skill.level==='Low') inc=INCOMES[0];
+      else if(skill.level==='Middle') inc=pick(rng, INCOMES);
+      else inc = pick(rng, [INCOMES[1], INCOMES[2]]);
+      // Social capital weighted: none 0.5, region 0.3, country 0.2
+      const social = pickWeighted(rng, [
+        {item:SOCIAL[0], w:0.5},
+        {item:SOCIAL[1], w:0.3},
+        {item:SOCIAL[2], w:0.2}
+      ]);
+      const id = Math.floor(rng()*1e9).toString(36);
+      scenario={risk,inc,skill,social,id};
+      renderScenario();
+      resetChoices();
+      clearOutcome();
+    }
+
+    function renderScenario(){
+      el.scenarioPills.innerHTML='';
+      const p1=document.createElement('div'); p1.className='pill'; p1.innerHTML=`Risk: <strong>${scenario.risk.level}</strong> — ${scenario.risk.hazard}`;
+      const p2=document.createElement('div'); p2.className='pill'; p2.innerHTML=`Income: <strong>${scenario.inc.level}</strong>`;
+      const p3=document.createElement('div'); p3.className='pill'; p3.innerHTML=`Skills: <strong>${scenario.skill.level}</strong>`;
+      const p4=document.createElement('div'); p4.className='pill'; p4.innerHTML=`Social capital: <strong>${scenario.social.level}</strong>`;
+      el.scenarioPills.appendChild(p1); el.scenarioPills.appendChild(p2); el.scenarioPills.appendChild(p3); el.scenarioPills.appendChild(p4);
+      el.scenarioText.innerHTML=`<div>${scenario.risk.text}</div><div>${scenario.inc.text}</div><div>${scenario.skill.text}</div><div>${scenario.social.text}</div>`;
+      el.scenarioIdPill.textContent=scenario.id;
+    }
+
+    // ===== Choices =====
+    function resetChoices(){
+      choices.destination=null;choices.timing=null;choices.finance=null;choices.legal=null;
+      Array.from(document.querySelectorAll('.choiceBtn')).forEach(b=>{b.classList.remove('primary')});
+      el.legalChoice.style.display='none';
+    }
+
+    function markChoice(group, value, btn){
+      choices[group]=value;
+      Array.from(document.querySelectorAll(`.choiceBtn[data-group="${group}"]`)).forEach(b=>b.classList.remove('primary'));
+      btn.classList.add('primary');
+      if(group==='destination'){
+        el.legalChoice.style.display = (value==='international')? 'flex':'none';
+      }
+    }
+
+    document.querySelectorAll('.choiceBtn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        markChoice(btn.dataset.group, btn.dataset.value, btn);
+      })
+    });
+
+    // ===== Outcome model =====
+    function computeOutcome(){
+      if(!scenario) return {error:"No scenario"};
+      if(!choices.destination||!choices.timing||!choices.finance) return {error:"Pick destination, timing, and financing first."};
+      if(choices.destination==='international' && !choices.legal) return {error:"Select a legal pathway for international migration."};
+
+      const risk=scenario.risk.riskScore; // 0-100
+      const incLevel=scenario.inc.level; // Low, Middle, High
+      const incIdx={Low:0,Middle:1,High:2}[incLevel];
+      const incFactor=[0.4,0.7,1.0][incIdx]; // ability to pay/qualify
+      const skillIdx={Low:0,Middle:1,High:2}[scenario.skill.level];
+      const skillFactor=[0.6,1.0,1.4][skillIdx];
+
+      const dest=DESTINATION[choices.destination];
+      const time=TIMING[choices.timing];
+
+      // Base safety gain from destination, scaled by timing risk multiplier
+      let safety = Math.min(95, dest.baseSafetyGain(risk) / time.riskMult);
+
+      // Costs: destination + financing + timing, modified by social capital
+      let baseCost = dest.cost * time.costMult; // 0-1
+      let financeAdj = (choices.finance==='savings'? (1 - scenario.inc.savings*0.4)
+                        : choices.finance==='network'? (1 - (scenario.inc.network*0.3 + (scenario.social.dom||scenario.social.int?0.1:0)))
+                        : (1 + (0.6 - scenario.inc.credit*0.4)) ); // loans add burden esp. w/ low credit
+      let costIndex = Math.min(1.5, Math.max(0, baseCost * financeAdj));
+
+      // Feasibility (legal/admin). Domestic nearly full; international depends on legal path + social capital
+      let feasibility = dest.legal; // baseline
+      let legalDetail = 'Domestic move';
+      if(choices.destination==='international'){
+        const lp=LEGAL_PATHS[choices.legal];
+        const elig = lp.feas(incFactor, skillFactor); // 0-1
+        feasibility = Math.max(0.05, Math.min(0.98, feasibility * (0.6 + 0.6*elig)));
+        if(scenario.social.int) feasibility = Math.min(0.98, feasibility + 0.1);
+        costIndex += lp.cost; // additional admin/legal costs
+        if(scenario.social.int) costIndex = Math.max(0, costIndex - 0.08);
+        legalDetail = lp.name;
+      } else if(choices.destination==='internal'){
+        if(scenario.social.dom){
+          feasibility = Math.min(0.99, feasibility + 0.1);
+          costIndex = Math.max(0, costIndex - 0.1);
+        }
+      }
+
+      // Economic outlook: income + skills productivity - costs + timing
+      let econ = Math.max(0, Math.min(100, 50*incFactor - 60*costIndex + safety*0.35 + 100*time.econShock + 100* (scenario.skill ? SKILLS[skillIdx].econBoost : 0)));
+
+      // Round + overall
+      const safePct=Math.round(safety);
+      const econPct=Math.round(econ);
+      const feasPct=Math.round(feasibility*100);
+      const overall = Math.round(0.45*safePct + 0.35*econPct + 0.20*feasPct);
+
+      // Narrative badges
+      const badges=[];
+      if(safePct>=70) badges.push(["High safety gain","good"]); else if(safePct>=50) badges.push(["Moderate safety gain","warn"]); else badges.push(["Low safety gain","bad"]);
+      if(econPct>=60) badges.push(["Economic prospects promising","good"]); else if(econPct>=40) badges.push(["Tight budget","warn"]); else badges.push(["Economic strain likely","bad"]);
+      if(feasPct>=70) badges.push(["Legally/administratively feasible","good"]); else if(feasPct>=40) badges.push(["Uncertain approvals","warn"]); else badges.push(["Low feasibility","bad"]);
+
+      // Narrative text
+      const destLabel={stay:"staying and adapting", internal:"moving within your country", international:"migrating internationally"}[choices.destination];
+      const financeLabel={savings:"using savings", network:"relying on your network", loan:"taking a loan"}[choices.finance];
+      const timingLabel=TIMING[choices.timing].name;
+
+      let networkCue = scenario.social.level!=="None" ? ` You have social capital in ${scenario.social.level.toLowerCase()}.` : '';
+      let narrative = `Given ${scenario.risk.level.toLowerCase()} climate risk, ${scenario.inc.level.toLowerCase()} household income, and ${scenario.skill.level.toLowerCase()} skills, ${destLabel} ${choices.destination==='international'?`via <em>${legalDetail}</em> `:""}and ${financeLabel} ${choices.timing==='now'?"immediately":"in "+timingLabel.toLowerCase()} leads to:` + networkCue;
+      narrative += `<ul>`+
+                   `<li><strong>Safety:</strong> ${safePct}/100 — ${DESTINATION[choices.destination].note}</li>`+
+                   `<li><strong>Economy:</strong> ${econPct}/100 — skills & timing effects included; costs about ${(baseCost*100|0)}% before adjustments.</li>`+
+                   `<li><strong>Feasibility:</strong> ${feasPct}/100 — ${choices.destination==='international'?LEGAL_PATHS[choices.legal].note:"domestic processes"}${scenario.social.level!=="None"?"; social capital provides support":""}.</li>`+
+                   `</ul>`;
+
+      return {safePct,econPct,feasPct,overall,badges,narrative,legalDetail,baseCost, costIndex};
+    }
+
+    function renderOutcome(){
+      const res=computeOutcome();
+      if(res.error){
+        el.outcomeText.innerHTML = `<span class="badge warn">${res.error}</span>`;
+        return;
+      }
+      el.kpiSafety.textContent=res.safePct;
+      el.kpiEcon.textContent=res.econPct;
+      el.kpiLegal.textContent=res.feasPct;
+      el.kpiOverall.textContent=res.overall;
+      el.outcomeBadges.innerHTML='';
+      for(const [txt,cls] of res.badges){
+        const b=document.createElement('div'); b.className=`badge ${cls}`; b.textContent=txt; el.outcomeBadges.appendChild(b);
+      }
+      el.outcomeText.innerHTML=res.narrative;
+
+      // Log to localStorage for later download
+      saveRow(res);
+    }
+
+    // ===== Persistence & CSV =====
+    const STORAGE_KEY='climigrate_rows_v2';
+    function saveRow(res){
+      const rows=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      const row={
+        timestamp:new Date().toISOString(),
+        session:sessionTag,
+        seed:seedStr,
+        scenario_id:scenario.id,
+        risk_level:scenario.risk.level,
+        risk_hazard:scenario.risk.hazard,
+        income_level:scenario.inc.level,
+        skills_level:scenario.skill.level,
+        social_capital:scenario.social.level,
+        dest:choices.destination,
+        timing:choices.timing,
+        finance:choices.finance,
+        legal:choices.destination==='international'?choices.legal:'',
+        safety:res.safePct,
+        econ:res.econPct,
+        feasibility:res.feasPct,
+        overall:res.overall
+      };
+      rows.push(row);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    }
+
+    function toCSV(rows){
+      if(!rows.length) return '';
+      const headers=Object.keys(rows[0]);
+      const escape=v=>`"${String(v).replaceAll('"','""')}"`;
+      const lines=[headers.join(',')].concat(rows.map(r=>headers.map(h=>escape(r[h]??'')).join(',')));
+      return lines.join('\n');
+    }
+
+    function downloadCSV(){
+      const rows=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      if(!rows.length){alert('No rows saved yet. Generate a scenario and view an outcome first.');return}
+      const csv=toCSV(rows);
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=`climate_migration_${sessionTag}_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    // ===== Lightweight self-tests =====
+    (function runSelfTests(){
+      const tests=[]; const log=(ok,msg)=>tests.push({ok,msg});
+      try{
+        // CSV newline & escaping test
+        const sample=[{a:'x',b:'y'},{a:'comma,inside',b:'quote"inside'}];
+        const csv=toCSV(sample);
+        const lines=csv.split('\n');
+        log(lines.length===3,'CSV has header + 2 rows');
+        log(/"comma,inside"/.test(csv),'CSV escapes commas with quotes');
+        log(/"quote""inside"/.test(csv),'CSV doubles internal quotes');
+        // Template literal sanity
+        const name='World';
+        const tpl=`Hello, ${name}!`;
+        log(tpl==='Hello, World!','Template literals interpolate correctly');
+      }catch(e){
+        console.error('Self-test error', e);
+        log(false,'Self-tests threw: '+e.message);
+      }
+      const ok=tests.every(t=>t.ok);
+      if(!ok){
+        console.warn('Some self-tests failed:', tests);
+      }
+    })();
+
+    // ===== UI Wiring =====
+    document.getElementById('newScenarioBtn').addEventListener('click', newScenario);
+    document.getElementById('outcomeBtn').addEventListener('click', renderOutcome);
+    document.getElementById('resetBtn').addEventListener('click', ()=>{resetChoices();clearOutcome()});
+    document.getElementById('downloadBtn').addEventListener('click', downloadCSV);
+
+    function clearOutcome(){
+      el.kpiSafety.textContent='—';
+      el.kpiEcon.textContent='—';
+      el.kpiLegal.textContent='—';
+      el.kpiOverall.textContent='—';
+      el.outcomeBadges.innerHTML='';
+      el.outcomeText.textContent='Your narrative outcome will appear here once you click “See Outcome”.';
+    }
+
+    // Auto‑start with a scenario for convenience
+    newScenario();
+  </script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grow or Go Green – In‑Class Simulation</title>
+<style>
+  :root {
+    --bg: #0f172a; /* slate-900 */
+    --panel: #111827; /* gray-900 */
+    --muted: #94a3b8; /* slate-400 */
+    --text: #e5e7eb; /* gray-200 */
+    --accent: #22c55e; /* green-500 */
+    --warn: #f59e0b; /* amber-500 */
+    --danger: #ef4444; /* red-500 */
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, 'Apple Color Emoji','Segoe UI Emoji';
+    background: radial-gradient(1200px 800px at 100% -10%, #0b1223 20%, var(--bg) 60%);
+    color: var(--text);
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+  .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0)); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  h1 { font-size: 28px; margin: 8px 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr 1fr 1fr; align-items: end; }
+  label { font-size: 14px; color: var(--muted); display: block; margin-bottom: 4px; }
+  input[type=number] { width: 100%; background: #0b1223; color: var(--text); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 12px; font-size: 16px; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  button { cursor: pointer; border: 1px solid rgba(255,255,255,0.12); background: #0b1223; color: var(--text); border-radius: 12px; padding: 10px 14px; font-size: 15px; }
+  button.primary { background: linear-gradient(90deg, #16a34a, #22c55e); border: none; color: #02140a; font-weight: 700; }
+  button.ghost { background: transparent; }
+  button.warn { background: #1f2937; border-color: #374151; }
+  .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(255,255,255,0.12); color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
+  .kpi .box { background: #0b1223; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
+  .kpi .label { color: var(--muted); font-size: 12px; }
+  .kpi .value { font-size: 22px; font-weight: 700; }
+  .note { color: var(--muted); font-size: 13px; }
+  .success { color: #34d399; }
+  .danger { color: #f87171; }
+  .warnc { color: #fbbf24; }
+  .tip { font-size: 12px; color: var(--muted); }
+  .hr { height: 1px; background: rgba(255,255,255,0.08); margin: 18px 0; }
+  details { background: #0b1223; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 14px; }
+  summary { cursor: pointer; font-weight: 600; }
+  .footer { font-size: 12px; color: var(--muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div style="display:flex; align-items:center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <div>
+          <h1>Grow or Go Green</h1>
+          <p class="sub">Allocate 100 jollies per round across Growth, Green Transition, and Social Spending. Maximize Happiness across <strong>5 rounds</strong>. Climate risk and shocks escalate if you under‑invest in Green and Social.</p>
+        </div>
+        <span class="pill">In‑class simulation • 5 rounds • replayable</span>
+      </div>
+
+      <div class="hr"></div>
+
+      <section id="controls" class="grid">
+        <div class="grid grid-2">
+          <div>
+            <label>Round</label>
+            <div class="kpi">
+              <div class="box"><div class="label">Current Round</div><div class="value" id="kpi-round">1</div></div>
+              <div class="box"><div class="label">Cumulative Emissions</div><div class="value" id="kpi-em">0.00</div></div>
+              <div class="box"><div class="label">Cumulative Development</div><div class="value" id="kpi-dev">0.00</div></div>
+              <div class="box"><div class="label">Climate Risk</div><div class="value" id="kpi-risk">0.00</div></div>
+            </div>
+          </div>
+          <div>
+            <label>Shock dynamics (optional)</label>
+            <details>
+              <summary>Shocks depend on risk from past choices</summary>
+              <p class="tip">From Rounds 2–5, shock <em>scale</em> rises with Climate Risk (built up from emissions and low adaptation). Prior Growth &gt; Green tilts shocks upward. Social and Green dampen impact.</p>
+              <div class="row" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div>
+                  <label for="alpha">Emissions → risk (α)</label>
+                  <input type="number" id="alpha" min="0" max="4" step="0.1" value="2.8" />
+                </div>
+                <div>
+                  <label for="beta">Growth‑tilt weight (β)</label>
+                  <input type="number" id="beta" min="0" max="1" step="0.05" value="0.35" />
+                </div>
+                <div>
+                  <label for="gamma">Adaptation buffer (γ)</label>
+                  <input type="number" id="gamma" min="0" max="0.02" step="0.001" value="0.007" />
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div>
+          <label>Allocate 100 jollies (integers only)</label>
+          <div class="row">
+            <div>
+              <label for="growth">Growth</label>
+              <input id="growth" type="number" min="0" max="100" step="1" value="50" />
+            </div>
+            <div>
+              <label for="green">Green Transition</label>
+              <input id="green" type="number" min="0" max="100" step="1" value="30" />
+            </div>
+            <div>
+              <label for="social">Social Spending</label>
+              <input id="social" type="number" min="0" max="100" step="1" value="20" />
+            </div>
+            <div>
+              <div class="note">Must sum to <strong>100</strong></div>
+              <div class="btns">
+                <button class="primary" id="lockIn">Lock in round</button>
+                <button class="ghost" id="randomize">Randomize 100</button>
+                <button class="warn" id="reset">Start over</button>
+              </div>
+            </div>
+          </div>
+          <div class="note" id="sumNote">Current sum: <span id="sumVal">100</span></div>
+        </div>
+      </section>
+
+      <div class="hr"></div>
+
+      <section>
+        <h3 style="margin:0 0 8px">Results</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Growth</th>
+              <th>Green</th>
+              <th>Social</th>
+              <th>Emissions</th>
+              <th>Development</th>
+              <th>Shock</th>
+              <th>Happiness</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+          <tfoot>
+            <tr>
+              <th colspan="7" style="text-align:right">Final Happiness</th>
+              <th id="finalH">—</th>
+            </tr>
+          </tfoot>
+        </table>
+        <p class="footer">Rules (25/11/10): Round 1 → Dev = 0.10×Growth + 0.02×Green; Em = max(0, 0.015×(Growth − Green)). If Social < 25: Dev −= 0.5. Rounds 2–4 → Dev += 0.09×Growth + 0.04×Green; Em += max(0, 0.015×(Growth − Green))×(1+0.07×(round−1)); Happiness each round = Dev − Em − ShockImpact + 0.012×Social + 0.012×Green, after shock damage is applied to Dev. Final Round 5 → Dev += 0.04×Growth + 0.06×Green; Em += same formula; Happiness = Dev − Em − 3×ShockImpact + 0.01×Social + 0.012×Green, after shock damage. Climate Risk updates every round: Risk += α×Em − γ×(0.6×Green + 0.4×Social), floored at 0 (default α=2.8, γ=0.007). Shock scale (Rounds 2–5): Risk<0.8 ⇒ mild; Risk<2.0 ⇒ moderate; else severe. ShockImpact is a random draw within its band, reduced by adaptation: Impact = Base × RoundMultiplier × (1 − 0.003×Social) × (1 − 0.0025×Green), bounded below at 0.3. RoundMultiplier = [—, —, 1.0, 1.5, 2.0, 4.0]. Growth>Green also nudges shocks upward. Shock damage to the economy (Rounds 2–5): after Impact is realized, Development is reduced by Damage = Impact × DamageMultiplier, with DamageMultiplier = [—, —, 0.5, 0.8, 1.0, 2.0].</p>
+        <p class= "footer"> © 2025 RP. This simulation was developed by Rio Park with assistance from ChatGPT (OpenAI) for educational use. You are welcome to use, adapt, and share this material for non-commercial educational or personal purposes. Please credit the author and contact me if you plan to modify or redistribute it publicly.  
+</p>
+      </section>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const els = {
+    growth: document.getElementById('growth'),
+    green: document.getElementById('green'),
+    social: document.getElementById('social'),
+    lock: document.getElementById('lockIn'),
+    rand: document.getElementById('randomize'),
+    reset: document.getElementById('reset'),
+    sumVal: document.getElementById('sumVal'),
+    sumNote: document.getElementById('sumNote'),
+    rows: document.getElementById('rows'),
+    kpiRound: document.getElementById('kpi-round'),
+    kpiEm: document.getElementById('kpi-em'),
+    kpiDev: document.getElementById('kpi-dev'),
+    kpiRisk: document.getElementById('kpi-risk'),
+    finalH: document.getElementById('finalH'),
+    alpha: document.getElementById('alpha'),
+    beta: document.getElementById('beta'),
+    gamma: document.getElementById('gamma'),
+  };
+
+  const state = {
+    round: 1,
+    hist: [],
+    cumEm: 0,
+    cumDev: 0,
+    risk: 0,
+    finalH: null
+  };
+
+  // helpers
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+  function updateSum(){
+    const g = parseInt(els.growth.value||0,10), r = parseInt(els.green.value||0,10), s = parseInt(els.social.value||0,10);
+    const sum = g + r + s;
+    els.sumVal.textContent = sum;
+    els.sumNote.style.color = sum===100 ? 'var(--muted)' : 'var(--danger)';
+    return sum;
+  }
+
+  function pushRow(o){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>Round ${o.round}</td>
+      <td>${o.growth}</td>
+      <td>${o.green}</td>
+      <td>${o.social}</td>
+      <td>${o.emissions.toFixed(2)}</td>
+      <td>${o.development.toFixed(2)}</td>
+      <td>${o.shock.toFixed(2)}</td>
+      <td><strong>${o.happiness.toFixed(2)}</strong></td>
+    `;
+    els.rows.appendChild(tr);
+  }
+
+  function refreshKPIs(){
+    els.kpiRound.textContent = state.round;
+    els.kpiEm.textContent = state.cumEm.toFixed(2);
+    els.kpiDev.textContent = state.cumDev.toFixed(2);
+    els.kpiRisk.textContent = state.risk.toFixed(2);
+    els.finalH.textContent = state.finalH===null ? '—' : state.finalH.toFixed(2);
+  }
+
+  function emissionsAdd(growth, green, round){
+    const base = Math.max(0, (growth - green) * 0.015);
+    const escalator = 1 + 0.07 * (round - 1); // stronger worsening with delay
+    return base * escalator;
+  }
+
+  function updateRisk(emAdd, green, social){
+    const alpha = parseFloat(els.alpha.value || '2.0');
+    const gamma = parseFloat(els.gamma.value || '0.008');
+    // Weighted adaptation buffer favors Green slightly
+    const buffer = gamma * (0.6*green + 0.4*social);
+    state.risk = Math.max(0, state.risk + alpha*emAdd - buffer);
+  }
+
+  function shockBase(scale){
+    // Wider bands, higher ceilings to enable catastrophic finals if unprepared
+    if (scale <= 1) return 0.6 + Math.random()*0.6;   // 0.6–1.2 mild
+    if (scale === 2) return 1.8 + Math.random()*1.7;  // 1.8–3.5 moderate
+    return 3.8 + Math.random()*3.2;                   // 3.8–7.0 severe
+  }
+
+  function shockScale(prev){
+    const beta = parseFloat(els.beta.value || '0.35');
+    // emissions‑driven risk decides the baseline bracket (tighter thresholds)
+    let scale = 1;
+    if (state.risk < 0.8) scale = 1; else if (state.risk < 2.0) scale = 2; else scale = 3;
+    // growth tilt nudges up or down slightly (favor higher severity under growth bias)
+    const tilt = clamp(((prev.growth - prev.green)/100) * beta, -0.3, 0.7);
+    if (Math.random() + tilt > 0.85 && scale < 3) scale += 1; // bump severity more often
+    return scale;
+  }
+
+  function shockImpact(raw, round, green, social){
+    // Round multipliers make late shocks much worse
+    const mult = {2:1.0, 3:1.5, 4:2.0, 5:4.0}[round] || 1.0;
+    // Adaptation dampening (bounded below)
+    const damp = (1 - 0.003*social) * (1 - 0.0025*green);
+    const adjusted = raw * mult * clamp(damp, 0.3, 1);
+    return adjusted;
+  }
+
+  function happiness(dev, em, round, shockImp, social, green){
+    const socialW = (round===5) ? 0.01 : 0.012;
+    const greenCo = (round===1) ? 0.02 : 0.012;
+    const shockWeight = (round===5) ? 3.0 : 1.0;
+    return dev - em - shockWeight*shockImp + socialW*social + greenCo*green;
+  }
+
+  function devIncrement(growth, green, round){
+    if (round === 1) return 0.10*growth + 0.02*green;
+    if (round <= 4) return 0.09*growth + 0.04*green;
+    return 0.04*growth + 0.06*green; // round 5
+  }
+
+  function lockRound(){
+    const sum = updateSum();
+    if (sum !== 100) { alert('Allocations must sum to 100.'); return; }
+    const growth = parseInt(els.growth.value,10);
+    const green = parseInt(els.green.value,10);
+    const social = parseInt(els.social.value,10);
+
+    if (![growth,green,social].every(v => Number.isInteger(v) && v>=0 && v<=100)){
+      alert('Please use whole numbers between 0 and 100.');
+      return;
+    }
+
+    const round = state.round;
+
+    // Development & Emissions
+    const devAdd = devIncrement(growth, green, round);
+    const emAdd = emissionsAdd(growth, green, round);
+
+    if (round === 1 && social < 25) {
+      state.cumDev += (devAdd - 0.5);
+    } else {
+      state.cumDev += devAdd;
+    }
+    state.cumEm += emAdd;
+
+    // Update risk after we see this round's emissions & adaptation
+    updateRisk(emAdd, green, social);
+
+    // Shock mechanics (none in round 1 beyond the social penalty)
+    let shock = 0; let impact = 0;
+    if (round >= 2){
+      const prev = state.hist[state.hist.length-1] || {growth:50, green:30};
+      const scale = shockScale(prev);
+      const base = shockBase(scale);
+      impact = shockImpact(base, round, green, social);
+      shock = impact; // we record the impact as the displayed shock value for transparency
+    }
+
+    // Apply shock damage to the development stock before computing happiness
+    if (round >= 2){
+      const dmgMult = {2:0.5, 3:0.8, 4:1.0, 5:2.0}[round] || 0.5;
+      state.cumDev = Math.max(0, state.cumDev - impact * dmgMult);
+    }
+
+    const development = state.cumDev;
+    const emissions = state.cumEm;
+    const happy = happiness(development, emissions, round, impact, social, green);
+
+    const row = { round, growth, green, social, emissions, development, shock, happiness: happy };
+    state.hist.push(row);
+    pushRow(row);
+
+    // Advance round or finish
+    if (round < 5){
+      state.round += 1;
+    } else {
+      state.finalH = happy;
+      els.lock.disabled = true; els.growth.disabled = true; els.green.disabled = true; els.social.disabled = true; els.rand.disabled = true;
+    }
+
+    refreshKPIs();
+
+    // Pre-fill with last choices
+    if (state.round <= 5){
+      els.growth.value = growth; els.green.value = green; els.social.value = social;
+      updateSum();
+    }
+  }
+
+  function randomize(){
+    // random triple of nonnegative integers summing to 100
+    let a = Math.floor(Math.random()*101);
+    let b = Math.floor(Math.random()*(101-a));
+    let c = 100 - a - b;
+    const arr = [a,b,c];
+    for (let i=0;i<3;i++){ if(arr[i]===0){ const j=(i+1)%3; if(arr[j]>1){ arr[i]=1; arr[j]-=1; } } }
+    els.growth.value = arr[0];
+    els.green.value = arr[1];
+    els.social.value = arr[2];
+    updateSum();
+  }
+
+  function startOver(){
+    state.round = 1; state.hist = []; state.cumDev = 0; state.cumEm = 0; state.risk = 0; state.finalH = null;
+    els.rows.innerHTML = '';
+    els.lock.disabled = false; els.growth.disabled = false; els.green.disabled = false; els.social.disabled = false; els.rand.disabled = false;
+    els.growth.value = 50; els.green.value = 30; els.social.value = 20; updateSum();
+    refreshKPIs();
+  }
+
+  ['input','change'].forEach(ev => {
+    els.growth.addEventListener(ev, updateSum);
+    els.green.addEventListener(ev, updateSum);
+    els.social.addEventListener(ev, updateSum);
+  });
+
+  els.lock.addEventListener('click', lockRound);
+  els.rand.addEventListener('click', randomize);
+  els.reset.addEventListener('click', startOver);
+
+  // init
+  updateSum();
+  refreshKPIs();
+})();
+</script>
+</body>
+</html>

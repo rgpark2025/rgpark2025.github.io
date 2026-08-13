@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title> Willimary Water Policy Evaluation </title>
+<style>
+  :root {
+    --bg:#0b1220; --panel:#111a2e; --ink:#e8eefc; --muted:#a7b4d6; --accent:#8dd0ff;
+    --good:#59d390; --warn:#ffd166; --bad:#ff6b6b;
+  }
+  * { box-sizing:border-box; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  body { margin:0; background:linear-gradient(180deg,#0b1220,#0b1220 40%,#0e1b33); color:var(--ink); }
+  header { padding:24px 20px; text-align:center; border-bottom:1px solid #1f2a45;}
+  header h1 { margin:0 0 6px; font-size:clamp(20px,2.6vw,30px); letter-spacing:.2px;}
+  header p { margin:0; color:var(--muted);}
+  main { max-width:1100px; margin:24px auto 80px; padding:0 16px; display:grid; grid-template-columns:1.1fr .9fr; gap:16px;}
+  .card { background:var(--panel); border:1px solid #1e2a49; border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.25);}
+  h2 { margin:0 0 10px; font-size:18px; font-weight:700;}
+  .row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed #243456;}
+  .row:last-child { border-bottom:none; }
+  .inputs label { display:block; font-size:14px; color:var(--muted); margin-bottom:6px;}
+  input[type=range]{ width:100%; }
+  .value { font-variant-numeric:tabular-nums; min-width:70px; text-align:right; color:var(--accent);}
+  select, input[type=number] { background:#0c1530; color:var(--ink); border:1px solid #22335a; border-radius:10px; padding:8px 10px; width:100%; }
+  .pill { display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #284072; color:var(--muted); margin-left:6px;}
+  .metric { background:#0d1731; border:1px solid #21355f; border-radius:14px; padding:12px; margin-bottom:12px;}
+  .metric h3 { margin:0 0 6px; font-size:14px; color:var(--muted);}
+  .metric .num { font-size:20px; font-weight:700; }
+  .bar { height:10px; background:#0b1430; border-radius:999px; overflow:hidden; border:1px solid #20325c; margin-top:8px;}
+  .bar > i { display:block; height:100%; background:linear-gradient(90deg,#4aa3ff,#8dd0ff); width:0%; }
+  .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
+  .tag { font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid #2a416f; color:var(--muted);}
+  .good { color:var(--good);} .warn{ color:var(--warn);} .bad{ color:var(--bad);}
+  .btn { background:#17356b; border:1px solid #2e57a3; color:#e9f2ff; padding:10px 14px; border-radius:12px; cursor:pointer;}
+  .btn:active { transform:translateY(1px); }
+  .foot { color:var(--muted); font-size:12px; margin-top:10px; }
+  .small { font-size:12px; color:var(--muted); }
+  details { background:#0e1833; border:1px solid #223560; border-radius:12px; padding:10px 12px; }
+  details summary { cursor:pointer; color:var(--accent); }
+  .preset-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .preset { background:#0e274f; border:1px solid #2d4f94; color:#e9f2ff; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px;}
+  .righthead { display:flex; justify-content:space-between; align-items:center; }
+  .switch { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);}
+  .switch input { accent-color:#4aa3ff; }
+  @media (max-width:980px){ main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Willimary Water Policy Evaluation</h1>
+  <p> Let's try evaluating a water policy. </p>
+</header>
+
+<main>
+  <!-- LEFT: Controls -->
+  <section class="card inputs">
+    <h2>Policy Design</h2>
+
+    <div class="row">
+      <div>
+        <label for="stringency">Stringency (required % effluent reduction for covered sources)</label>
+        <input id="stringency" type="range" min="10" max="100" step="5" value="50" />
+      </div>
+      <div class="value"><span id="stringencyVal">50</span>%</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="coverage">Coverage (% of industrial & municipal sources covered)</label>
+        <input id="coverage" type="range" min="20" max="100" step="5" value="70" />
+      </div>
+      <div class="value"><span id="coverageVal">70</span>%</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="instrument">Instrument</label>
+        <select id="instrument">
+          <option value="cc">Command-and-control (tech/per-plant limits)</option>
+          <option value="tax">Discharge fee / pollution tax</option>
+          <option value="trade" selected>Cap-and-trade / offsets</option>
+        </select>
+      </div>
+      <div class="value"><span class="pill">efficiency differs</span></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="enforcement">Enforcement Intensity (inspections, penalties)</label>
+        <input id="enforcement" type="range" min="0" max="100" step="5" value="60" />
+      </div>
+      <div class="value"><span id="enforcementVal">60</span>/100</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="investment">Public Investment (wastewater grants, $ millions)</label>
+        <input id="investment" type="number" min="0" step="1" value="20" />
+        <div class="small">Capital grants to upgrade plants (amortized in B/C).</div>
+      </div>
+      <div class="value">$<span id="investmentVal">20</span>M</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="ej">Equity Add-Ons</label>
+        <select id="ej">
+          <option value="none" selected>None</option>
+          <option value="target">Targeted subsidies in disadvantaged areas</option>
+          <option value="rebate">Low-income rate assistance (rebates)</option>
+          <option value="both">Both</option>
+        </select>
+      </div>
+      <div class="value"><span class="pill">affects B/C & distribution</span></div>
+    </div>
+
+    <div class="row" style="grid-template-columns:1fr;">
+      <button class="btn" id="run">Run Assessment</button>
+    </div>
+
+    <div class="preset-row">
+      <button class="preset" id="p1">Preset: Efficient baseline</button>
+      <button class="preset" id="p2">Preset: Equity-calibrated</button>
+      <button class="preset" id="p3">Preset: Stress test</button>
+    </div>
+
+    <details style="margin-top:8px;">
+      <summary>Assumptions (calibration overview)</summary>
+      <ul class="small">
+        <li><b>Effectiveness:</b> Gains scale with <i>stringency × coverage</i>, enforcement, and (modestly) public investment; equity targeting slightly improves adoption/effectiveness in disadvantaged areas.</li>
+        <li><b>Costs:</b> Private compliance grows convexly & increases near 100% stringency/coverage; enforcement still causes sharp increases, but market tools are less swamped by high-E monitoring costs.</li>
+        <li><b>B/C:</b> Benefits = monetized reduction in violations; Costs = private out-of-pocket + city admin/enforcement + annualized grants + (if chosen) EJ program costs (targeting/rebates). Uncertainty: ±35% on benefits; ±20% on costs.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- RIGHT: Results -->
+  <section class="card">
+    <div class="righthead">
+      <h2>Assessment</h2>
+      <label class="switch"><input type="checkbox" id="debug"> Show calibration numbers</label>
+    </div>
+
+    <!-- 1) Environmental Impact Assessment -->
+    <div class="metric">
+      <h3>Environmental Impact Assessment</h3>
+      <div class="num" id="wqGain">–</div>
+      <div class="small" id="wqSub">water-quality gain; ↓ violations vs. baseline</div>
+      <div class="bar"><i id="wqBar"></i></div>
+      <div class="tags" id="wqTags"></div>
+    </div>
+
+    <!-- 2) Economic Benefit–Cost Analysis -->
+    <div class="metric">
+      <h3>Economic Benefit–Cost Analysis</h3>
+      <div class="num" id="bcRatio">–</div>
+      <div class="small" id="bcRange">range: –</div>
+      <div class="small" id="costBreakdown">Costs: –</div>
+      <details style="margin-top:8px;">
+        <summary>How this B/C is computed (click)</summary>
+        <div class="small" id="bcaExplain"></div>
+      </details>
+      <div class="small" id="debugBox" style="display:none; margin-top:6px;"></div>
+    </div>
+
+    <!-- 3) Distribution / Equality Score -->
+    <div class="metric">
+      <h3>Distribution / Equality Score</h3>
+      <div class="num" id="ejScore">–</div>
+      <div class="small" id="ejSub">who benefits & who pays</div>
+    </div>
+
+    <div class="foot" id="narrative" style="margin-top:12px;">Adjust policy settings to see results.</div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmtUSD = n => "$" + (Math.round(n)).toLocaleString();
+const pct = n => (Math.round(n*10)/10)+"%";
+
+["stringency","coverage","enforcement","investment"].forEach(id=>{
+  const el = $(id);
+  const outId = id+"Val";
+  const sync = ()=> {
+    if(id==="investment") $(outId).textContent = parseFloat(el.value||0);
+    else $(outId).textContent = el.value;
+  };
+  el.addEventListener("input", sync);
+  sync();
+});
+
+/* ---------------- Final Calibration ----------------
+Designed so "Efficient baseline" preset yields B/C > 1
+while extremes remain costly.
+----------------------------------------------------- */
+
+function run() {
+  const S = +$("stringency").value;
+  const C = +$("coverage").value;
+  const E = +$("enforcement").value;
+  const I = +$("investment").value;
+  const inst = $("instrument").value;     // 'cc' | 'tax' | 'trade'
+  const ej = $("ej").value;               // none | target | rebate | both
+  const debug = $("debug").checked;
+
+  // Instrument parameters: trade > tax > CAC on cost-effectiveness
+  const instParams = {
+    cc:    { eff:1.00, privCost:1.18, cityCost:1.08 },
+    tax:   { eff:1.06, privCost:0.90, cityCost:1.02 },
+    trade: { eff:1.08, privCost:0.80, cityCost:1.03 }
+  }[inst];
+
+  // --- ENVIRONMENTAL GAIN ---
+  const baseViolation = 0.40;
+  const k1 = 0.21, a=1.05, b=0.95, g=0.60;
+  const ejEffMult = (ej==="none") ? 1 : (ej==="target" ? 1.04 : (ej==="rebate" ? 1.02 : 1.06));
+
+  let reduction1 = k1 * Math.pow(S/100, a) * Math.pow(C/100, b) * Math.pow(E/100, g) * instParams.eff * ejEffMult;
+
+  // Public investment effectiveness
+  const grants = I / 8.0;
+  const investEffCentral = 0.0060 * grants * (0.65 + 0.35*(E/100));
+
+  let totalReduction = Math.min(reduction1 + investEffCentral, 0.33);
+  const newViol = Math.max(baseViolation - totalReduction, 0.05);
+  const wqGainPct = ((baseViolation - newViol) / baseViolation) * 100;
+
+  // --- COSTS ---
+  // Convex base + moderated edge factors
+  const convex = Math.pow(S/65, 1.8) * Math.pow(C/75, 1.6);
+  const edgeS = 1 / Math.max(0.08, 1 - S/100);
+  const edgeC = 1 / Math.max(0.08, 1 - C/100);
+  const superHigh = 1 + Math.max(0, (S-85)/15)**2 + Math.max(0, (C-85)/15)**2;
+
+  // Enforcement blow-up (tempered for market tools)
+  const edgeE = 1 / Math.max(0.10, 1 - E/100);
+  const extraE = 1 + Math.max(0, (E-70)/30)**2;
+  const enfMultBase = (1 + 0.12*(E/100));
+  const enfBlow = Math.min(2.0, edgeE * extraE);
+  const instEnfRelax = (inst === "trade" || inst === "tax") ? 0.75 : 1.00;
+
+  // Private compliance (resource cost)
+  let privateCostResource = (80 + 360 * convex) * edgeS * edgeC * superHigh;
+  privateCostResource *= instParams.privCost;
+  privateCostResource *= enfMultBase * Math.pow(enfBlow, instEnfRelax);
+
+  const privateCostPaid = privateCostResource;
+
+  // City admin/enforcement
+  let cityCost = (10 + 0.09 * C + 0.12 * E) * instParams.cityCost;
+  cityCost *= Math.min(3.2, (0.8 + 0.2*edgeC) * (edgeE*extraE));
+
+  // Annualized capital grants
+  const annualizedGrants = I * 0.08;
+
+  // Equity program fiscal costs
+  const disadvShare = 0.40 * (C/100);
+  let ejProgramCost = 0;
+  if (ej === "target") ejProgramCost = privateCostResource * 0.14 * disadvShare;
+  if (ej === "rebate") ejProgramCost = privateCostResource * 0.07 * disadvShare;
+  if (ej === "both")   ejProgramCost = privateCostResource * (0.14+0.07) * disadvShare;
+
+  // --- BENEFITS & B/C ---
+  const benefitPerVPoint = 330; // $M per 0.01 violation-share reduced (central)
+  const vPoints = (baseViolation - newViol) / 0.01;
+  const annualBenefitsCentral = benefitPerVPoint * vPoints;
+
+  const annualCosts = privateCostPaid + cityCost + annualizedGrants + ejProgramCost;
+  const bcCentral = annualCosts>0 ? (annualBenefitsCentral / annualCosts) : 0;
+
+  // Uncertainty band
+  const benefitsLow = annualBenefitsCentral * 0.65;
+  const benefitsHigh= annualBenefitsCentral * 1.35;
+  const costsLow    = annualCosts * 0.80;
+  const costsHigh   = annualCosts * 1.20;
+  const bcLow  = benefitsLow / costsHigh;
+  const bcHigh = benefitsHigh / costsLow;
+
+  // --- DISTRIBUTION / EQUALITY ---
+  let ejScore = 2.5;  // /5
+  let ejNotes = "baseline distribution; some hotspots persist";
+  if (inst==="trade") ejScore += 0.2;
+  if (ej==="target"){ ejScore += 0.9; ejNotes = "targeted grants shift gains to disadvantaged areas"; }
+  if (ej==="rebate"){ ejScore += 0.6; ejNotes = "rate assistance reduces low-income bill burden"; }
+  if (ej==="both")  { ejScore += 1.3; ejNotes = "targeted gains + bill relief improve equity"; }
+
+  // --- UI UPDATE ---
+  $("wqGain").textContent = pct(wqGainPct);
+  $("wqBar").style.width = Math.min(100, wqGainPct)+"%";
+  $("wqSub").textContent = "water-quality gain; ↓ violations vs. baseline";
+
+  $("bcRatio").textContent = (Math.round(bcCentral*100)/100).toFixed(2)+" : 1";
+  $("bcRange").textContent = "range: " + (Math.round(bcLow*100)/100).toFixed(2) + "–" + (Math.round(bcHigh*100)/100).toFixed(2);
+
+  $("costBreakdown").textContent =
+    "Costs: private (paid) " + fmtUSD(privateCostPaid) + "/yr"
+    + "; city " + fmtUSD(cityCost) + "/yr"
+    + "; annualized grants " + fmtUSD(annualizedGrants) + "/yr"
+    + (ej!=="none" ? ("; equity program " + fmtUSD(ejProgramCost) + "/yr") : "");
+
+  $("bcaExplain").textContent =
+    `Benefits value a reduction of ${vPoints.toFixed(1)} violation-points `
+    + `at $${benefitPerVPoint}M per point → ${fmtUSD(annualBenefitsCentral)}/yr. `
+    + `Costs include: private (${fmtUSD(privateCostPaid)}/yr) `
+    + `+ city admin/enforcement (${fmtUSD(cityCost)}/yr) `
+    + `+ annualized grants (${fmtUSD(annualizedGrants)}/yr)`
+    + (ej!=="none" ? ` + equity program costs (${fmtUSD(ejProgramCost)}/yr)` : "")
+    + `. Market tools retain an efficiency edge; extremes in stringency/coverage or enforcement still raise costs sharply.`;
+
+  $("ejScore").textContent = (Math.round(ejScore*10)/10) + " / 5";
+  $("ejSub").textContent = ejNotes;
+
+  // Tags
+  const tags = $("wqTags"); tags.innerHTML = "";
+  const mk = (t, cls="") => { const s=document.createElement("span"); s.className="tag "+cls; s.textContent=t; return s; };
+  tags.append(mk(wqGainPct>=25?"Major improvement":"Modest improvement", wqGainPct>=25?"good":""));
+  tags.append(mk(bcCentral>=1?"B/C favorable":"B/C uncertain", bcCentral>=1?"good":"warn"));
+  if (bcHigh<1) tags.append(mk("B/C unlikely", "bad"));
+
+  const narrative = `
+    With ${S}% stringency over ${C}% of sources and ${$("instrument").selectedOptions[0].text},
+    expected violation reductions are ${pct(wqGainPct)} relative to baseline. Total annual costs are ${fmtUSD(annualCosts)}
+    (private ${fmtUSD(privateCostPaid)}; city ${fmtUSD(cityCost)}; grants ${fmtUSD(annualizedGrants)}${ej!=="none" ? "; equity " + fmtUSD(ejProgramCost) : ""}),
+    yielding a central B/C of ${(Math.round(bcCentral*100)/100).toFixed(2)}:1 (range ${ (Math.round(bcLow*100)/100).toFixed(2)}–${(Math.round(bcHigh*100)/100).toFixed(2)}).
+    ${ej==="none"?"":("Equity add-ons applied: "+$("ej").selectedOptions[0].text+".")}
+  `;
+  $("narrative").textContent = narrative.replace(/\s+/g,' ').trim();
+
+  // Debug numbers
+  const dbg =
+    `DEBUG — vPoints: ${vPoints.toFixed(2)}, Benefits: ${fmtUSD(annualBenefitsCentral)} | `
+    + `Private: ${fmtUSD(privateCostPaid)}, City: ${fmtUSD(cityCost)}, Grants: ${fmtUSD(annualizedGrants)}, `
+    + (ej!=="none" ? `Equity: ${fmtUSD(ejProgramCost)}, ` : ``)
+    + `Total Cost: ${fmtUSD(annualCosts)}, B/C: ${(annualBenefitsCentral/Math.max(1,annualCosts)).toFixed(2)}`;
+  $("debugBox").style.display = debug ? "block" : "none";
+  $("debugBox").textContent = dbg;
+}
+
+// Presets
+function setPreset(p){
+  if(p===1){ // Efficient baseline (clears B/C > 1)
+    $("instrument").value="trade";
+    $("stringency").value=40; $("stringencyVal").textContent=40;
+    $("coverage").value=70;   $("coverageVal").textContent=70;
+    $("enforcement").value=60;$("enforcementVal").textContent=60;
+    $("investment").value=20; $("investmentVal").textContent=20;
+    $("ej").value="none";
+  }
+  if(p===2){ // Equity-calibrated (near 1 with better distribution)
+    $("instrument").value="trade";
+    $("stringency").value=50; $("stringencyVal").textContent=50;
+    $("coverage").value=75;   $("coverageVal").textContent=75;
+    $("enforcement").value=60;$("enforcementVal").textContent=60;
+    $("investment").value=22; $("investmentVal").textContent=22;
+    $("ej").value="target";
+  }
+  if(p===3){ // Stress test (show why B/C can fall)
+    $("instrument").value="cc";
+    $("stringency").value=70; $("stringencyVal").textContent=70;
+    $("coverage").value=85;   $("coverageVal").textContent=85;
+    $("enforcement").value=90;$("enforcementVal").textContent=90;
+    $("investment").value=25; $("investmentVal").textContent=25;
+    $("ej").value="both";
+  }
+  run();
+}
+
+$("run").addEventListener("click", run);
+$("p1").addEventListener("click",()=>setPreset(1));
+$("p2").addEventListener("click",()=>setPreset(2));
+$("p3").addEventListener("click",()=>setPreset(3));
+
+run();
+</script>
+
+<footer style="text-align:center; font-size:12px; color:#a7b4d6; margin-top:40px; padding:10px; border-top:1px solid #243456;">
+  © 2025 RP. This simulation was created with the help of ChatGPT.  
+  You are welcome to use or adapt it for personal or educational purposes. 
+  If used in a class, it would be greatly appreciated if you let the author know how/when you used it. 
+</footer>
+
+</body>
+</html>
