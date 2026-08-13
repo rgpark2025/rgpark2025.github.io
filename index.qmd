@@ -42,4 +42,4 @@ College of Liberal Studies, Seoul National University, South Korea
 International Political Economy \| Environmental Politics \| International Trade \| Issue Linkage \| Economy and Security
 :::
 
-<center>[Last updated: January 6, 2026 <br> © 2026 RyuGyung (Rio) Park. Made with [Quarto](https://quarto.org)]{style="font-size: 0.8em; color: grey;"}</center>
+<center>[Last updated: August 13, 2026 <br> © 2026 RyuGyung (Rio) Park. Made with [Quarto](https://quarto.org), based on template provided by [Juan Tellez](https://juanftellez.com/).]{style="font-size: 0.8em; color: grey;"}</center>
